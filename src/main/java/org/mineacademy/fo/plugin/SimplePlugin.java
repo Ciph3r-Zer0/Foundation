@@ -441,19 +441,19 @@ public abstract class SimplePlugin extends JavaPlugin implements Listener {
 
 		else
 			methodLibraryLoader:
-			for (final Library library : manualLibraries) {
+					for (final Library library : manualLibraries) {
 
-				// Detect conflicts
-				for (final Library otherLibrary : libraries)
-					if (library.getArtifactId().equals(otherLibrary.getArtifactId()) && library.getGroupId().equals(otherLibrary.getGroupId())) {
-						Common.warning("Detected library conflict: '" + library.getGroupId() + "." + library.getArtifactId() + "' is defined both in getLibraries() and plugin.yml! "
-								+ "We'll prefer the version from plugin.yml, if you want to use the one from getLibraries() then remove it from your plugin.yml file.");
+						// Detect conflicts
+						for (final Library otherLibrary : libraries)
+							if (library.getArtifactId().equals(otherLibrary.getArtifactId()) && library.getGroupId().equals(otherLibrary.getGroupId())) {
+								Common.warning("Detected library conflict: '" + library.getGroupId() + "." + library.getArtifactId() + "' is defined both in getLibraries() and plugin.yml! "
+										+ "We'll prefer the version from plugin.yml, if you want to use the one from getLibraries() then remove it from your plugin.yml file.");
 
-						continue methodLibraryLoader;
+								continue methodLibraryLoader;
+							}
+
+						library.load();
 					}
-
-				library.load();
-			}
 	}
 
 	/**
@@ -482,11 +482,11 @@ public abstract class SimplePlugin extends JavaPlugin implements Listener {
 
 	/**
 	 * A list of libraries to automatically download and load.
-	 *
+	 * <p>
 	 * **REQUIRES JAVA 8 FOR THE TIME BEING**
 	 *
-	 * @deprecated requires Java 8 thus only works on Minecraft 1.16 or lower with such Java version installed
 	 * @return
+	 * @deprecated requires Java 8 thus only works on Minecraft 1.16 or lower with such Java version installed
 	 */
 	@Deprecated
 	protected List<Library> getLibraries() {
@@ -495,12 +495,12 @@ public abstract class SimplePlugin extends JavaPlugin implements Listener {
 
 	/**
 	 * Register a simple bungee class as a custom bungeecord listener.
-	 *
+	 * <p>
 	 * DO NOT use this if you only have that one field there with a getter, we already register it automatically,
 	 * this method is intended to be used if you have multiple fields there and want to register multiple channels.
 	 * Then you just call this method and parse the field into it from your onReloadablesStart method.
 	 */
-	protected final void registerBungeeCord(@NonNull BungeeListener bungee) {
+	protected final void registerBungeeCord(@NonNull final BungeeListener bungee) {
 		final Messenger messenger = this.getServer().getMessenger();
 
 		if (!messenger.isIncomingChannelRegistered(this, bungee.getChannel()))
@@ -895,9 +895,9 @@ public abstract class SimplePlugin extends JavaPlugin implements Listener {
 	/**
 	 * Convenience method for quickly registering events in all classes in your plugin that
 	 * extend the given class.
-	 *
+	 * <p>
 	 * NB: You must have a no arguments constructor otherwise it will not be registered
-	 *
+	 * <p>
 	 * TIP: Set your Debug key in your settings.yml to ["auto-register"] to see what is registered.
 	 *
 	 * @param extendingClass
@@ -956,9 +956,9 @@ public abstract class SimplePlugin extends JavaPlugin implements Listener {
 	/**
 	 * Convenience method for quickly registering all command classes in your plugin that
 	 * extend the given class.
-	 *
+	 * <p>
 	 * NB: You must have a no arguments constructor otherwise it will not be registered
-	 *
+	 * <p>
 	 * TIP: Set your Debug key in your settings.yml to ["auto-register"] to see what is registered.
 	 *
 	 * @param extendingClass
@@ -1003,7 +1003,7 @@ public abstract class SimplePlugin extends JavaPlugin implements Listener {
 	 *
 	 * @param command
 	 */
-	protected final void registerCommand(final Command command) {
+	public final void registerCommand(final Command command) {
 		if (command instanceof SimpleCommand)
 			((SimpleCommand) command).register();
 
@@ -1017,7 +1017,7 @@ public abstract class SimplePlugin extends JavaPlugin implements Listener {
 	 * @param labelAndAliases
 	 * @param group
 	 */
-	protected final void registerCommands(final SimpleCommandGroup group) {
+	public final void registerCommands(final SimpleCommandGroup group) {
 		if (this.startingReloadables)
 			this.reloadables.registerCommands(group);
 
@@ -1075,11 +1075,11 @@ public abstract class SimplePlugin extends JavaPlugin implements Listener {
 	}
 
 	/**
-	 * @deprecated do not use, internal use only
 	 * @param group
+	 * @deprecated do not use, internal use only
 	 */
 	@Deprecated
-	public final void setMainCommand(SimpleCommandGroup group) {
+	public final void setMainCommand(final SimpleCommandGroup group) {
 		Valid.checkBoolean(this.mainCommand == null, "Main command has already been set to " + this.mainCommand);
 
 		this.mainCommand = group;
@@ -1119,7 +1119,7 @@ public abstract class SimplePlugin extends JavaPlugin implements Listener {
 	/**
 	 * Foundation automatically can filter console commands for you, including
 	 * messages from other plugins or the server itself, preventing unnecessary console spam.
-	 *
+	 * <p>
 	 * You can return a list of messages that will be matched using "startsWith OR contains" method
 	 * and will be filtered.
 	 *
@@ -1203,8 +1203,8 @@ public abstract class SimplePlugin extends JavaPlugin implements Listener {
 	 * Returns the default or "main" bungee listener you use. This is checked from {@link BungeeUtil#sendPluginMessage(org.mineacademy.fo.bungee.BungeeMessageType, Object...)}
 	 * so that you won't have to pass in channel name each time and we use channel name from this listener instead.
 	 *
-	 * @deprecated only returns the first found bungee listener, if you have multiple, do not use, order not guaranteed
 	 * @return
+	 * @deprecated only returns the first found bungee listener, if you have multiple, do not use, order not guaranteed
 	 */
 	@Deprecated
 	public final BungeeListener getBungeeCord() {
@@ -1214,11 +1214,11 @@ public abstract class SimplePlugin extends JavaPlugin implements Listener {
 	/**
 	 * Sets the first valid bungee listener
 	 *
-	 * @deprecated INTERNAL USE ONLY, DO NOT USE! can only set one bungee listener, if you have multiple, order not guaranteed
 	 * @param bungeeListener
+	 * @deprecated INTERNAL USE ONLY, DO NOT USE! can only set one bungee listener, if you have multiple, order not guaranteed
 	 */
 	@Deprecated
-	public final void setBungeeCord(BungeeListener bungeeListener) {
+	public final void setBungeeCord(final BungeeListener bungeeListener) {
 		this.bungeeListener = bungeeListener;
 	}
 
